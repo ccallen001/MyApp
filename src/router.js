@@ -34,6 +34,11 @@ const router = new VueRouter({
       meta: {
         requiresAuth: true
       }
+    },
+    {
+      path: '*',
+      name: '404',
+      component: () => import(/* webpackChunkName: "404" */ '@/views/404.vue')
     }
   ]
 });
