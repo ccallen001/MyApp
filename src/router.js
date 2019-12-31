@@ -1,9 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 
-import * as firebase from 'firebase/app';
-import 'firebase/auth';
-
 import Home from '@/views/Home.vue';
 
 Vue.use(VueRouter);
@@ -18,7 +15,7 @@ const router = new VueRouter({
       component: () => import(/* webpackChunkName: "login" */ '@/views/Login.vue')
     },
     {
-      path: '/home',
+      path: '/',
       name: 'home',
       component: Home
     },

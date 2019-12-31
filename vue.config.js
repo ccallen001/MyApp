@@ -19,7 +19,7 @@ module.exports = {
       }
     ],
     manifestOptions: {
-      start_url: '/home'
+      start_url: '/'
     },
     display: "standalone",
     background_color: "#000000"

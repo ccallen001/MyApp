@@ -10,7 +10,7 @@
         <!-- Login -->
         <Icon name="fa fa-user" />
       </router-link>
-      <router-link class="router-link" to="/home" alt="Home" exact>
+      <router-link class="router-link" to="/" alt="Home" exact>
         <!-- Home -->
         <Icon name="fa fa-home" />
       </router-link>
