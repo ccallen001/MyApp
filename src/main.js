@@ -6,6 +6,9 @@ import store from './store';
 import vuetify from './plugins/vuetify';
 
 import * as firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
+
 import firebaseConfig from './firebase.config';
 
 import App from './App.vue';
@@ -38,35 +41,42 @@ Vue.mixin({
 
 firebase
   .auth()
-  .onAuthStateChanged(() => {
+  .onAuthStateChanged(async () => {
     if (!appHasMounted) {
-      router.beforeEach((to, from, next) => {
-        const requiresAuth = to.matched.some(({ meta }) => meta.requiresAuth);
-        const currentUser = firebase.auth().currentUser;
+      const currentUser = firebase.auth().currentUser;
+      // const user = await firebase.firestore().collection('users').where('uid', '==', currentUser.uid).get();
+      firebase.firestore().collection("users").where('uid', '==', currentUser.uid).get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          const user = doc.data();
 
-        store.commit('setUser', currentUser);
+          store.commit('setUser', user);
 
-        if (requiresAuth && !currentUser) {
-          const isLoginPage = from.path === '/login';
+          router.beforeEach((to, from, next) => {
+            const requiresAuth = to.matched.some(({ meta }) => meta.requiresAuth);
 
-          _this && _this.$showModal(!isLoginPage ? 'Redirecting to login page...' : `You need to log in to see the ${to.name} page!`);
+            if (requiresAuth && !currentUser) {
+              const isLoginPage = from.path === '/login';
 
-          setTimeout(() => {
-            _this && _this.$closeModal();
-            !isLoginPage && next('/login');
-          }, 3000);
-        } else {
-          next();
-        }
+              _this && _this.$showModal(!isLoginPage ? 'Redirecting to login page...' : `You need to log in to see the ${to.name} page!`);
+
+              setTimeout(() => {
+                _this && _this.$closeModal();
+                !isLoginPage && next('/login');
+              }, 3000);
+            } else {
+              next();
+            }
+          });
+
+          new Vue({
+            router,
+            store,
+            vuetify,
+            render: h => h(App)
+          }).$mount('#app');
+
+          appHasMounted = true;
+        });
       });
-
-      new Vue({
-        router,
-        store,
-        vuetify,
-        render: h => h(App)
-      }).$mount('#app');
     }
-
-    appHasMounted = true;
   });

@@ -83,7 +83,7 @@
 import Icon from "@/components/Icon";
 
 import * as firebase from "firebase/app";
-import "firebase/auth";
+import 'firebase/auth';
 
 export default {
   components: {

@@ -62,8 +62,8 @@
 import Icon from "@/components/Icon";
 
 import * as firebase from "firebase/app";
-import "firebase/auth";
-import "firebase/firestore";
+import 'firebase/app';
+import 'firebase/firestore';
 
 export default {
   components: {
@@ -125,11 +125,14 @@ export default {
         const { user } = await firebase
           .auth()
           .createUserWithEmailAndPassword(this.email, this.password);
+        const uid = user.uid;
 
         firebase
           .firestore()
           .collection("users")
-          .add({
+          .doc(uid)
+          .set({
+            uid,
             email: user.email
           });
 

@@ -3,9 +3,14 @@
     <h2>Chat</h2>
     <v-list class="message-list" dense>
       <v-list-item v-for="message in messages" :key="message.date">
-        <p class="author">{{ message.author }}</p>
-        <p class="text">{{ message.text }}</p>
-        <p class="time">{{ new Date(message.time) }}</p>
+        <div>
+          <img :src="message.photoURL" />
+        </div>
+        <div>
+          <p class="author">{{ message.author }}</p>
+          <p class="text">{{ message.text }}</p>
+          <p class="time">{{ new Date(message.time) }}</p>
+        </div>
       </v-list-item>
     </v-list>
     <v-text-field
@@ -27,10 +32,15 @@
     overflow: auto;
 
     .v-list-item {
-      display: block;
+      display: flex;
       margin-bottom: 8px;
       padding: 0;
       text-align: left;
+
+      img {
+        margin-right: 8px;
+        height: 40px;
+      }
 
       .author {
         font-size: 10px;
@@ -65,8 +75,8 @@ export default {
     };
   },
   computed: {
-    userEmail() {
-      return this.$store.state.user && this.$store.state.user.email;
+    user() {
+      return this.$store.state.user;
     }
   },
   created() {
@@ -88,12 +98,17 @@ export default {
   methods: {
     postMessage() {
       if (this.userMessage) {
+        const id = new Date().getTime();
+
         firebase
           .firestore()
           .collection("messages")
-          .add({
-            author: this.userEmail,
-            time: new Date().getTime(),
+          .doc(id.toString())
+          .set({
+            id,
+            author: this.user.email,
+            photoURL: this.user.photoURL,
+            time: id,
             text: this.userMessage
           });
 
