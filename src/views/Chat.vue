@@ -3,9 +3,7 @@
     <h2>Chat</h2>
     <v-list class="message-list" dense>
       <v-list-item v-for="message in messages" :key="message.date">
-        <div>
-          <img :src="message.photoURL" />
-        </div>
+        <div class="avatar" :style="{ background: `url('${message.photoURL}') no-repeat center / contain` }"></div>
         <div>
           <p class="author">{{ message.author }}</p>
           <p class="text">{{ message.text }}</p>
@@ -37,9 +35,10 @@
       padding: 0;
       text-align: left;
 
-      img {
+      .avatar {
         margin-right: 8px;
         height: 40px;
+        width: 40px;
       }
 
       .author {
